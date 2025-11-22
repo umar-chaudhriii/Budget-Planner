@@ -121,8 +121,8 @@ export default function Navbar() {
             {isMenuOpen && (
                 <>
                     <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setIsMenuOpen(false)}></div>
-                    <div className="fixed inset-y-0 right-0 w-64 bg-white dark:bg-black z-50 md:hidden shadow-xl overflow-y-auto">
-                        <div className="p-4 space-y-2">
+                    <div className="fixed inset-y-0 right-0 w-72 bg-white dark:bg-gray-900 z-50 md:hidden shadow-xl ">
+                        <div className="p-4 space-y-1">
                             {session ? (
                                 <>
                                     <Link href="/" className={cn("block px-4 py-3 rounded-lg text-sm font-medium transition-colors", isActive('/') ? "bg-primary/10 text-primary" : "hover:bg-gray-50 dark:hover:bg-gray-800")} onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
@@ -133,7 +133,7 @@ export default function Navbar() {
                                     <Link href="/calendar" className={cn("block px-4 py-3 rounded-lg text-sm font-medium transition-colors", isActive('/calendar') ? "bg-primary/10 text-primary" : "hover:bg-gray-50 dark:hover:bg-gray-800")} onClick={() => setIsMenuOpen(false)}>Calendar</Link>
                                 </>
                             ) : (
-                                <div className="space-y-2">
+                                <div className="space-y-1">
                                     <Link href="/login" className="block w-full text-center py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" onClick={() => setIsMenuOpen(false)}>Login</Link>
                                     <Link href="/signup" className="block w-full text-center ios-button py-2" onClick={() => setIsMenuOpen(false)}>Sign Up</Link>
                                 </div>
