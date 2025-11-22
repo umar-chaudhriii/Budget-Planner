@@ -66,7 +66,6 @@ export default async function TransactionsPage({ searchParams }: { searchParams:
                     </Link>
                 </div>
             </div>
-            </div>
 
             <div className="ios-card overflow-hidden">
                 <table className="w-full text-sm text-left">
