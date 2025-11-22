@@ -83,7 +83,7 @@ export default function SubscriptionsPage() {
 
     return (
         <div className="container mx-auto py-10 px-4 max-w-4xl">
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                 <h1 className="text-4xl font-bold tracking-tight">Subscriptions</h1>
                 <button
                     onClick={() => setIsAdding(!isAdding)}

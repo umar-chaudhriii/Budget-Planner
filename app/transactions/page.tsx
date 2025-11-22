@@ -53,18 +53,19 @@ export default async function TransactionsPage({ searchParams }: { searchParams:
 
     return (
         <div className="container mx-auto py-10 px-4">
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                 <h1 className="text-4xl font-bold tracking-tight">Transactions</h1>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                     <TransactionFilters categories={categories} />
                     <TransactionActions transactions={transactions} />
-                    <Link href="/transactions/import" className="ios-button bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700">
+                    <Link href="/transactions/import" className="ios-button bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 text-sm">
                         Import CSV
                     </Link>
-                    <Link href="/transactions/add" className="ios-button">
+                    <Link href="/transactions/add" className="ios-button text-sm">
                         + Add
                     </Link>
                 </div>
+            </div>
             </div>
 
             <div className="ios-card overflow-hidden">
