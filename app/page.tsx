@@ -29,14 +29,12 @@ async function getDashboardData() {
             _sum: { amount: true }
         });
 
-        // Calculate Category Data for Pie Chart
         const categoryStats = await prisma.transaction.groupBy({
             by: ['categoryId'],
             where: { userId: session.user.id, type: 'EXPENSE' },
             _sum: { amount: true },
         });
 
-        // Fetch category names
         const categories = await prisma.category.findMany({
             where: { userId: session.user.id, id: { in: categoryStats.map(c => c.categoryId).filter(Boolean) as string[] } }
         });
@@ -49,7 +47,6 @@ async function getDashboardData() {
             };
         });
 
-        // Add Available Balance to Pie Chart
         const totalIncome = income._sum.amount || 0;
         const totalExpenses = expenses._sum.amount || 0;
         const availableBalance = totalIncome - totalExpenses;
@@ -61,7 +58,6 @@ async function getDashboardData() {
             });
         }
 
-        // Calculate Monthly Data (Last 6 months)
         const sixMonthsAgo = new Date();
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
         sixMonthsAgo.setDate(1);
@@ -77,28 +73,25 @@ async function getDashboardData() {
 
         const monthlyDataMap = new Map<string, { name: string; income: number; expense: number }>();
 
-        // Initialize last 6 months
         for (let i = 0; i < 6; i++) {
-            const d = new Date();
-            d.setMonth(d.getMonth() - i);
-            const key = `${d.getFullYear()}-${d.getMonth()}`;
-            const name = d.toLocaleString('default', { month: 'short' });
-            monthlyDataMap.set(key, { name, income: 0, expense: 0 });
+            const date = new Date();
+            date.setMonth(date.getMonth() - i);
+            const monthKey = date.toLocaleString('default', { month: 'short' });
+            monthlyDataMap.set(monthKey, { name: monthKey, income: 0, expense: 0 });
         }
 
         recentTransactionsForChart.forEach(t => {
-            const key = `${t.date.getFullYear()}-${t.date.getMonth()}`;
-            if (monthlyDataMap.has(key)) {
-                const entry = monthlyDataMap.get(key)!;
+            const monthKey = new Date(t.date).toLocaleString('default', { month: 'short' });
+            const existing = monthlyDataMap.get(monthKey);
+            if (existing) {
                 if (t.type === 'INCOME') {
-                    entry.income += t.amount;
+                    existing.income += t.amount;
                 } else {
-                    entry.expense += t.amount;
+                    existing.expense += t.amount;
                 }
             }
         });
 
-        // Convert map to array and reverse to show oldest to newest
         const monthlyData = Array.from(monthlyDataMap.values()).reverse();
 
         return {
@@ -124,7 +117,6 @@ export default async function Home() {
 
     const data = await getDashboardData();
 
-    // Fallback data if DB is empty or failed
     const displayData = data || {
         recentTransactions: [],
         totalBalance: 0,
@@ -134,15 +126,38 @@ export default async function Home() {
         monthlyData: []
     };
 
-    return (
-        <main className="flex min-h-screen flex-col items-center justify-between p-4 md:p-24 bg-gray-50 dark:bg-gray-900">
-            <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-                <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">
-                    Welcome, {session.user?.name?.split(' ')[0] || 'User'}
-                </h1>
-            </div>
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 12) return "Good Morning";
+        if (hour < 18) return "Good Afternoon";
+        return "Good Evening";
+    };
 
-            <Dashboard initialData={displayData} />
+    return (
+        <main className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 p-4 md:p-8">
+            <div className="max-w-7xl mx-auto">
+                {/* Welcome Section */}
+                <div className="mb-8 ios-card p-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-none overflow-hidden relative">
+                    <div className="absolute top-0 right-0 opacity-10">
+                        <svg width="200" height="200" viewBox="0 0 200 200" fill="none">
+                            <circle cx="100" cy="100" r="80" stroke="white" strokeWidth="2"/>
+                            <circle cx="100" cy="100" r="60" stroke="white" strokeWidth="2"/>
+                            <circle cx="100" cy="100" r="40" stroke="white" strokeWidth="2"/>
+                        </svg>
+                    </div>
+                    <div className="relative z-10">
+                        <p className="text-blue-100 text-sm font-medium mb-2">{getGreeting()}</p>
+                        <h1 className="text-4xl md:text-5xl font-bold mb-2">
+                            {session.user?.name?.split(' ')[0] || 'User'} 👋
+                        </h1>
+                        <p className="text-blue-100 text-lg">
+                            Here's your financial overview for today
+                        </p>
+                    </div>
+                </div>
+
+                <Dashboard initialData={displayData} />
+            </div>
         </main>
     );
 }
