@@ -3,6 +3,7 @@ import Dashboard from "@/app/components/Dashboard";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import Greeting from "@/app/components/Greeting";
 
 async function getDashboardData() {
     const session = await getServerSession(authOptions);
@@ -126,15 +127,7 @@ export default async function Home() {
         monthlyData: []
     };
 
-    const getGreeting = () => {
-        const hour = new Date().getHours();
-        if (hour >= 0 && hour < 6) return "Good Night";
-        if (hour >= 6 && hour < 12) return "Good Morning";
-        if (hour >= 12 && hour < 14) return "Good Noon";
-        if (hour >= 14 && hour < 17) return "Good Afternoon";
-        if (hour >= 17 && hour < 21) return "Good Evening";
-        return "Good Night";
-    };
+
 
     const firstName = session.user?.name?.split(' ')[0] || 'User';
     const capitalizedName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
@@ -146,16 +139,13 @@ export default async function Home() {
                 <div className="mb-8 ios-card p-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-none overflow-hidden relative">
                     <div className="absolute top-0 right-0 opacity-10">
                         <svg width="200" height="200" viewBox="0 0 200 200" fill="none">
-                            <circle cx="100" cy="100" r="80" stroke="white" strokeWidth="2"/>
-                            <circle cx="100" cy="100" r="60" stroke="white" strokeWidth="2"/>
-                            <circle cx="100" cy="100" r="40" stroke="white" strokeWidth="2"/>
+                            <circle cx="100" cy="100" r="80" stroke="white" strokeWidth="2" />
+                            <circle cx="100" cy="100" r="60" stroke="white" strokeWidth="2" />
+                            <circle cx="100" cy="100" r="40" stroke="white" strokeWidth="2" />
                         </svg>
                     </div>
                     <div className="relative z-10">
-                        <p className="text-blue-100 text-sm font-medium mb-2">{getGreeting()}</p>
-                        <h1 className="text-4xl md:text-5xl font-bold mb-2">
-                            {capitalizedName}
-                        </h1>
+                        <Greeting name={capitalizedName} />
                         <p className="text-blue-100 text-lg">
                             Here's your financial overview for today
                         </p>
