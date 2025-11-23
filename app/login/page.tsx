@@ -123,7 +123,6 @@ export default function LoginPage() {
                     </div>
 
                     <p className="text-xs text-center text-muted-foreground">
-                        Google OAuth requires setup. See <Link href="/GOOGLE_OAUTH_SETUP.md" className="text-primary hover:underline">setup guide</Link> for instructions.
                     </p>
 
                     <div className="text-center text-sm">
