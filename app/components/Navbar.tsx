@@ -134,7 +134,7 @@ export default function Navbar() {
                 <>
                     {/* Backdrop */}
                     <div 
-                        className="fixed inset-0 bg-black/60 z-[60] md:hidden backdrop-blur-sm" 
+                        className="fixed inset-0 bg-transparent z-[60] md:hidden " 
                         onClick={() => setIsMenuOpen(false)}
                     ></div>
                     
@@ -176,7 +176,7 @@ export default function Navbar() {
                 <>
                     {/* Backdrop */}
                     <div 
-                        className="fixed inset-0 bg-black/60 z-[60] md:hidden backdrop-blur-sm" 
+                        className="fixed inset-0 bg-transparent z-[60] md:hidden " 
                         onClick={() => setIsProfileOpen(false)}
                     ></div>
                     

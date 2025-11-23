@@ -128,10 +128,16 @@ export default async function Home() {
 
     const getGreeting = () => {
         const hour = new Date().getHours();
-        if (hour < 12) return "Good Morning";
-        if (hour < 18) return "Good Afternoon";
-        return "Good Evening";
+        if (hour >= 0 && hour < 6) return "Good Night";
+        if (hour >= 6 && hour < 12) return "Good Morning";
+        if (hour >= 12 && hour < 14) return "Good Noon";
+        if (hour >= 14 && hour < 17) return "Good Afternoon";
+        if (hour >= 17 && hour < 21) return "Good Evening";
+        return "Good Night";
     };
+
+    const firstName = session.user?.name?.split(' ')[0] || 'User';
+    const capitalizedName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
 
     return (
         <main className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 p-4 md:p-8">
@@ -148,7 +154,7 @@ export default async function Home() {
                     <div className="relative z-10">
                         <p className="text-blue-100 text-sm font-medium mb-2">{getGreeting()}</p>
                         <h1 className="text-4xl md:text-5xl font-bold mb-2">
-                            {session.user?.name?.split(' ')[0] || 'User'} 👋
+                            {capitalizedName}
                         </h1>
                         <p className="text-blue-100 text-lg">
                             Here's your financial overview for today
