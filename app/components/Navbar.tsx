@@ -134,12 +134,12 @@ export default function Navbar() {
                 <>
                     {/* Backdrop */}
                     <div 
-                        className="fixed inset-0 bg-transparent z-[60] md:hidden " 
+                        className="fixed inset-0 bg-transparent z-[200] md:hidden " 
                         onClick={() => setIsMenuOpen(false)}
                     ></div>
                     
                     {/* Dropdown Menu */}
-                    <div className="fixed top-20 right-4 w-64 bg-white dark:bg-gray-900 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-[101] md:hidden">
+                    <div className="fixed top-20 right-4 w-64 bg-white dark:bg-gray-900 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-[201] md:hidden">
                         {session ? (
                             <>
                                 <Link href="/" className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-800" onClick={() => setIsMenuOpen(false)}>
@@ -176,12 +176,12 @@ export default function Navbar() {
                 <>
                     {/* Backdrop */}
                     <div 
-                        className="fixed inset-0 bg-transparent z-[60] md:hidden " 
+                        className="fixed inset-0 bg-transparent z-[200] md:hidden " 
                         onClick={() => setIsProfileOpen(false)}
                     ></div>
                     
                     {/* Profile Dropdown */}
-                    <div className="fixed top-20 right-4 w-64 bg-white dark:bg-gray-900 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-[101] md:hidden">
+                    <div className="fixed top-20 right-4 w-64 bg-white dark:bg-gray-900 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-[201] md:hidden">
                         <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary overflow-hidden border-2 border-primary/20">
