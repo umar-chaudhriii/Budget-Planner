@@ -5,8 +5,8 @@ import { useSession, signOut } from "next-auth/react";
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from './ThemeToggle';
-import { useState } from 'react';
-import { Menu, X, User, Settings, LogOut } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Menu, X, User, Settings, LogOut, Home, CreditCard, FolderOpen, Repeat, Target, Calendar } from 'lucide-react';
 import Image from 'next/image';
 
 export default function Navbar() {
@@ -16,6 +16,18 @@ export default function Navbar() {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
 
     const isActive = (path: string) => pathname === path;
+
+    // Close menus when clicking outside
+    useEffect(() => {
+        if (isMenuOpen || isProfileOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isMenuOpen, isProfileOpen]);
 
     return (
         <nav className="sticky top-0 z-50 w-full bg-white/70 dark:bg-black/70 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50">
@@ -100,7 +112,7 @@ export default function Navbar() {
                     <div className="md:hidden flex items-center gap-2">
                         <ThemeToggle />
                         {session && (
-                            <button onClick={() => setIsProfileOpen(!isProfileOpen)} className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                            <button onClick={() => { setIsProfileOpen(!isProfileOpen); setIsMenuOpen(false); }} className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary overflow-hidden border-2 border-primary/20">
                                     {session.user?.image ? (
                                         <img src={session.user.image} alt={session.user.name || 'Profile'} className="w-full h-full object-cover" />
@@ -110,35 +122,51 @@ export default function Navbar() {
                                 </div>
                             </button>
                         )}
-                        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <button onClick={() => { setIsMenuOpen(!isMenuOpen); setIsProfileOpen(false); }} className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                         </button>
                     </div>
                 </div>
             </div>
 
-            {/* Mobile Menu Overlay */}
+            {/* Mobile Navigation Dropdown */}
             {isMenuOpen && (
                 <>
-                    <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setIsMenuOpen(false)}></div>
-                    <div className="fixed inset-y-0 right-0 w-72 bg-white dark:bg-gray-900 z-50 md:hidden shadow-xl ">
-                        <div className="p-4 space-y-1">
-                            {session ? (
-                                <>
-                                    <Link href="/" className={cn("block px-4 py-3 rounded-lg text-sm font-medium transition-colors", isActive('/') ? "bg-primary/10 text-primary" : "hover:bg-gray-50 dark:hover:bg-gray-800")} onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
-                                    <Link href="/transactions" className={cn("block px-4 py-3 rounded-lg text-sm font-medium transition-colors", isActive('/transactions') ? "bg-primary/10 text-primary" : "hover:bg-gray-50 dark:hover:bg-gray-800")} onClick={() => setIsMenuOpen(false)}>Transactions</Link>
-                                    <Link href="/categories" className={cn("block px-4 py-3 rounded-lg text-sm font-medium transition-colors", isActive('/categories') ? "bg-primary/10 text-primary" : "hover:bg-gray-50 dark:hover:bg-gray-800")} onClick={() => setIsMenuOpen(false)}>Categories</Link>
-                                    <Link href="/subscriptions" className={cn("block px-4 py-3 rounded-lg text-sm font-medium transition-colors", isActive('/subscriptions') ? "bg-primary/10 text-primary" : "hover:bg-gray-50 dark:hover:bg-gray-800")} onClick={() => setIsMenuOpen(false)}>Subscriptions</Link>
-                                    <Link href="/goals" className={cn("block px-4 py-3 rounded-lg text-sm font-medium transition-colors", isActive('/goals') ? "bg-primary/10 text-primary" : "hover:bg-gray-50 dark:hover:bg-gray-800")} onClick={() => setIsMenuOpen(false)}>Goals</Link>
-                                    <Link href="/calendar" className={cn("block px-4 py-3 rounded-lg text-sm font-medium transition-colors", isActive('/calendar') ? "bg-primary/10 text-primary" : "hover:bg-gray-50 dark:hover:bg-gray-800")} onClick={() => setIsMenuOpen(false)}>Calendar</Link>
-                                </>
-                            ) : (
-                                <div className="space-y-1">
-                                    <Link href="/login" className="block w-full text-center py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" onClick={() => setIsMenuOpen(false)}>Login</Link>
-                                    <Link href="/signup" className="block w-full text-center ios-button py-2" onClick={() => setIsMenuOpen(false)}>Sign Up</Link>
-                                </div>
-                            )}
-                        </div>
+                    {/* Backdrop */}
+                    <div 
+                        className="fixed inset-0 bg-black/60 z-[100] md:hidden backdrop-blur-sm" 
+                        onClick={() => setIsMenuOpen(false)}
+                    ></div>
+                    
+                    {/* Dropdown Menu */}
+                    <div className="fixed top-20 right-4 w-64 bg-white dark:bg-gray-900 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-[101] md:hidden">
+                        {session ? (
+                            <>
+                                <Link href="/" className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-800" onClick={() => setIsMenuOpen(false)}>
+                                    <Home size={18} /> Dashboard
+                                </Link>
+                                <Link href="/transactions" className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-800" onClick={() => setIsMenuOpen(false)}>
+                                    <CreditCard size={18} /> Transactions
+                                </Link>
+                                <Link href="/categories" className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-800" onClick={() => setIsMenuOpen(false)}>
+                                    <FolderOpen size={18} /> Categories
+                                </Link>
+                                <Link href="/subscriptions" className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-800" onClick={() => setIsMenuOpen(false)}>
+                                    <Repeat size={18} /> Subscriptions
+                                </Link>
+                                <Link href="/goals" className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-800" onClick={() => setIsMenuOpen(false)}>
+                                    <Target size={18} /> Goals
+                                </Link>
+                                <Link href="/calendar" className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" onClick={() => setIsMenuOpen(false)}>
+                                    <Calendar size={18} /> Calendar
+                                </Link>
+                            </>
+                        ) : (
+                            <div className="p-2">
+                                <Link href="/login" className="block w-full text-center py-2 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors mb-2" onClick={() => setIsMenuOpen(false)}>Login</Link>
+                                <Link href="/signup" className="block w-full text-center ios-button py-2" onClick={() => setIsMenuOpen(false)}>Sign Up</Link>
+                            </div>
+                        )}
                     </div>
                 </>
             )}
@@ -146,9 +174,15 @@ export default function Navbar() {
             {/* Mobile Profile Menu */}
             {isProfileOpen && session && (
                 <>
-                    <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setIsProfileOpen(false)}></div>
-                    <div className="fixed top-16 right-4 w-64 bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden z-50 md:hidden">
-                        <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+                    {/* Backdrop */}
+                    <div 
+                        className="fixed inset-0 bg-black/60 z-[100] md:hidden backdrop-blur-sm" 
+                        onClick={() => setIsProfileOpen(false)}
+                    ></div>
+                    
+                    {/* Profile Dropdown */}
+                    <div className="fixed top-20 right-4 w-64 bg-white dark:bg-gray-900 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-[101] md:hidden">
+                        <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary overflow-hidden border-2 border-primary/20">
                                     {session.user?.image ? (
@@ -158,14 +192,20 @@ export default function Navbar() {
                                     )}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-medium truncate">{session.user?.name}</p>
-                                    <p className="text-xs text-muted-foreground truncate">{session.user?.email}</p>
+                                    <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{session.user?.name}</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{session.user?.email}</p>
                                 </div>
                             </div>
                         </div>
-                        <Link href="/profile" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" onClick={() => setIsProfileOpen(false)}><User size={16} /> Profile</Link>
-                        <Link href="/settings" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" onClick={() => setIsProfileOpen(false)}><Settings size={16} /> Settings</Link>
-                        <button onClick={() => signOut()} className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"><LogOut size={16} /> Logout</button>
+                        <Link href="/profile" className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" onClick={() => setIsProfileOpen(false)}>
+                            <User size={16} /> Profile
+                        </Link>
+                        <Link href="/settings" className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" onClick={() => setIsProfileOpen(false)}>
+                            <Settings size={16} /> Settings
+                        </Link>
+                        <button onClick={() => signOut()} className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                            <LogOut size={16} /> Logout
+                        </button>
                     </div>
                 </>
             )}
